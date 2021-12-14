@@ -1,2 +1,1 @@
-# data-mining
-Sistema de Recomendação de Animes
+# Sistema de Recomendação de Animes
