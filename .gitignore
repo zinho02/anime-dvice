@@ -1,1 +1,8 @@
-resources/data/*
+resources/data/cleaned/*
+!resources/data/cleaned/.getkeep
+
+resources/data/filtered/*
+!resources/data/filtered/.getkeep
+
+resources/data/plain/*
+!resources/data/plain/.getkeep
