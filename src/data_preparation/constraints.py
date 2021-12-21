@@ -17,5 +17,6 @@ ANIMELIST_TYPE_FILE = AUXILIAR_DIR + "animelist_type.csv"
 ANIMELIST_STATUS_FILE = AUXILIAR_DIR + "animelist_status.csv"
 ANIMELIST_RATING_FILE = AUXILIAR_DIR + "animelist_rating.csv"
 ANIMELIST_RELATED_FILE = AUXILIAR_DIR + "animelist_related.csv"
+ANIMELIST_GENRE_FILE = AUXILIAR_DIR + "animelist_genre.csv"
 
 NOW = datetime.utcnow()

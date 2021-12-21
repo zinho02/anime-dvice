@@ -36,6 +36,7 @@ def process_animelist(df: pd.DataFrame):
     df = transform_animelist_aired_string(df)
     df = transform_animelist_duration(df)
     df = transform_animelist_rating(df)
+    df = transform_animelist_genre(df)
 
     return df
 
