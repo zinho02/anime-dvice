@@ -1,5 +1,8 @@
+import json
+
 import numpy as np
 import pandas as pd
+from pandas.core.frame import DataFrame
 
 from constraints import *
 
@@ -29,9 +32,30 @@ def operate_time(val: str):
     time = str(aux['hr']) + ':' + str(aux['min']) + ':' + str(aux['sec'])
     return datetime.strptime(time, '%H:%M:%S').time()
 
-def operate_related(val: str):
-    print(val)
+def json_convert(string) -> json:
+    if(type(string) == dict):
+        return json.loads(json.dumps(string))
+    new_string = str(string).replace('"', '*special_char*')
+    new_string = str(new_string).replace('\'', '"')
+    new_string = str(new_string).replace('*special_char*', '\'')
+    return json.loads(new_string)
+
+def operate_related(anime_id: int, related: str, df: DataFrame):
+    related_json = json_convert(related)
+
+    data = pd.DataFrame()
+    data.loc[0, 'anime_id'] = anime_id
+    # data.set_index('anime_id', inplace=True)
+
+    for relation_type in related_json.keys():
+        for relation in related_json[relation_type]:
+            relation_json = json_convert(relation)
+            if (df[(df['anime_id'] == relation_json['mal_id']) & (df['title'] == relation_json['title'])]['anime_id'].shape[0] > 0):
+                relation_type_formatted = (relation_type.lower()).replace(' ', '_')
+                data.loc[0, relation_type_formatted] = relation_json['mal_id']
     
+    return data
+
 # animelist
 # drop
 def drop_animelist_image_url(df: pd.DataFrame):
@@ -82,12 +106,18 @@ def drop_animelist_opening_theme(df: pd.DataFrame):
 def drop_animelist_ending_theme(df: pd.DataFrame):
     df.drop('ending_theme', axis=1, inplace=True)
 
+def drop_animelist_producer(df: pd.DataFrame):
+    df.drop('producer', axis=1, inplace=True)
+
+def drop_animelist_studio(df: pd.DataFrame):
+    df.drop('studio', axis=1, inplace=True)
+
 # transform
 def transform_animelist_type(df: pd.DataFrame):
     types = df['type'].unique()
     data = {'id': list(range(0,types.size)), 'type': types.tolist()}
     animelist_type = pd.DataFrame(data)
-    animelist_type.to_csv(AUXILIAR_DIR + "animelist_type.csv", index=False, encoding='utf-8')
+    animelist_type.to_csv(ANIMELIST_TYPE_FILE, index=False, encoding='utf-8')
     replacement = dict()
     for _, row in animelist_type.iterrows():
         replacement[row['type']] = row['id']
@@ -98,7 +128,7 @@ def transform_animelist_status(df: pd.DataFrame):
     status = df['status'].unique()
     data = {'id': list(range(0,status.size)), 'status': status.tolist()}
     animelist_status = pd.DataFrame(data)
-    animelist_status.to_csv(AUXILIAR_DIR + "animelist_status.csv", index=False, encoding='utf-8')
+    animelist_status.to_csv(ANIMELIST_STATUS_FILE, index=False, encoding='utf-8')
     replacement = dict()
     for _, row in animelist_status.iterrows():
         replacement[row['status']] = row['id']
@@ -143,12 +173,18 @@ def transform_animelist_rating(df: pd.DataFrame):
     rating = df['rating'].unique().copy()
     data = {'id': list(range(0, rating.size)), 'rating': rating.tolist()}
     animelist_rating = pd.DataFrame(data)
-    animelist_rating.to_csv(AUXILIAR_DIR + "animelist_rating.csv", index=False, encoding='utf-8')
+    animelist_rating.to_csv(ANIMELIST_RATING_FILE, index=False, encoding='utf-8')
     replacement = dict()
     for _, row in animelist_rating.iterrows():
         replacement[row['rating']] = row['id']
     return df.replace({'rating': replacement})
 
 def transform_animelist_related(df: pd.DataFrame):
-    df['related'] = df['related'].replace('[]',np.NaN)
-    df['related'].apply(operate_related)
+    new_df = pd.DataFrame()
+    for _, row in df.iterrows():
+        if (not row['related'] == '[]'):
+            new_row = operate_related(row['anime_id'], row['related'], df)
+            new_df = new_df.append(new_row, ignore_index = True)
+    new_df.to_csv(ANIMELIST_RELATED_FILE, index=False, encoding='utf-8')
+
+    df.drop('related', axis=1, inplace=True)

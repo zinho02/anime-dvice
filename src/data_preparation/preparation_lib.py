@@ -1,7 +1,6 @@
 import os
 from datetime import datetime
 
-import numpy as np
 import pandas as pd
 
 from animelist_operations import *
@@ -10,6 +9,7 @@ from userlist_operations import *
 
 
 def process_animelist(df: pd.DataFrame):
+    transform_animelist_related(df)
     # Drop data
     drop_animelist_title(df)
     drop_animelist_title_english(df)
@@ -24,7 +24,9 @@ def process_animelist(df: pd.DataFrame):
     drop_animelist_background(df)
     drop_animelist_premiered(df)
     drop_animelist_broadcast(df)
+    drop_animelist_producer(df)
     drop_animelist_licensor(df)
+    drop_animelist_studio(df)
     drop_animelist_opening_theme(df)
     drop_animelist_ending_theme(df)
 
