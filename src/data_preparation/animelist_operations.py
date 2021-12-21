@@ -56,6 +56,12 @@ def operate_related(anime_id: int, related: str, df: DataFrame):
     
     return data
 
+def convert_genre(string: str):
+    string = string.replace(', ', ',')
+    string = string.replace(' ', '_')
+    string = string.lower()
+    return string.split(',')
+
 # animelist
 # drop
 def drop_animelist_image_url(df: pd.DataFrame):
@@ -115,8 +121,7 @@ def drop_animelist_studio(df: pd.DataFrame):
 # transform
 def transform_animelist_type(df: pd.DataFrame):
     types = df['type'].unique()
-    data = {'id': list(range(0,types.size)), 'type': types.tolist()}
-    animelist_type = pd.DataFrame(data)
+    animelist_type = pd.DataFrame({'id': list(range(0,types.size)), 'type': types.tolist()})
     animelist_type.to_csv(ANIMELIST_TYPE_FILE, index=False, encoding='utf-8')
     replacement = dict()
     for _, row in animelist_type.iterrows():
@@ -126,8 +131,7 @@ def transform_animelist_type(df: pd.DataFrame):
 
 def transform_animelist_status(df: pd.DataFrame):
     status = df['status'].unique()
-    data = {'id': list(range(0,status.size)), 'status': status.tolist()}
-    animelist_status = pd.DataFrame(data)
+    animelist_status = pd.DataFrame({'id': list(range(0,status.size)), 'status': status.tolist()})
     animelist_status.to_csv(ANIMELIST_STATUS_FILE, index=False, encoding='utf-8')
     replacement = dict()
     for _, row in animelist_status.iterrows():
@@ -188,3 +192,24 @@ def transform_animelist_related(df: pd.DataFrame):
     new_df.to_csv(ANIMELIST_RELATED_FILE, index=False, encoding='utf-8')
 
     df.drop('related', axis=1, inplace=True)
+
+def transform_animelist_genre(df: pd.DataFrame):
+    # drop null values
+    df = df.dropna(subset=['genre'])
+    df['genre'] = df['genre'].apply(convert_genre)
+    genres = set()
+    for _, row in df.iterrows():
+        for gen in row['genre']:
+            genres.add(gen)
+
+    genres_list = list(genres)
+
+    for i in df.index:
+        new_list = list()
+        for gen in df.at[i, 'genre']:
+            new_list.append(genres_list.index(gen))
+        df.at[i, 'genre'] = new_list
+
+    animelist_genres = pd.DataFrame({'id': range(0,len(genres_list)), 'genre': genres_list})
+    animelist_genres.to_csv(ANIMELIST_GENRE_FILE, index=False, encoding='utf-8')
+    return df
