@@ -67,17 +67,17 @@ def convert_genre(string: str):
 def drop_animelist_image_url(df: pd.DataFrame):
     df.drop('image_url', axis=1, inplace=True)
 
-def drop_animelist_title(df: pd.DataFrame):
-    df.drop('title', axis=1, inplace=True)
+# def drop_animelist_title(df: pd.DataFrame):
+#     df.drop('title', axis=1, inplace=True)
 
-def drop_animelist_title_english(df: pd.DataFrame):
-    df.drop('title_english', axis=1, inplace=True)
+# def drop_animelist_title_english(df: pd.DataFrame):
+#     df.drop('title_english', axis=1, inplace=True)
 
-def drop_animelist_title_japanese(df: pd.DataFrame):
-    df.drop('title_japanese', axis=1, inplace=True)
+# def drop_animelist_title_japanese(df: pd.DataFrame):
+#     df.drop('title_japanese', axis=1, inplace=True)
 
-def drop_animelist_title_synonyms(df: pd.DataFrame):
-    df.drop('title_synonyms', axis=1, inplace=True)
+# def drop_animelist_title_synonyms(df: pd.DataFrame):
+#     df.drop('title_synonyms', axis=1, inplace=True)
 
 def drop_animelist_licensor(df: pd.DataFrame):
     df.drop('licensor', axis=1, inplace=True)
@@ -212,4 +212,48 @@ def transform_animelist_genre(df: pd.DataFrame):
 
     animelist_genres = pd.DataFrame({'id': range(0,len(genres_list)), 'genre': genres_list})
     animelist_genres.to_csv(ANIMELIST_GENRE_FILE, index=False, encoding='utf-8')
+    return df
+
+def columns_types(df: pd.DataFrame): 
+    type_dict = pd.read_csv(os.path.join(AUXILIAR_DIR, "animelist_type.csv"), index_col=1, squeeze=True).to_dict()
+    for key in type_dict:
+        df[key] = df.apply(lambda x: encode_types(key, x["type"]), axis=1)
+    return df
+
+def encode_types(curr_type: str, type: str):
+    if (curr_type == type):
+        return 1
+    return 0
+
+def columns_genres(df: pd.DataFrame):
+    genre_dict = pd.read_csv(os.path.join(AUXILIAR_DIR, "animelist_genre_dict.csv"), index_col=0, squeeze=True).to_dict()
+    for key in genre_dict:
+        df[key] = 0
+    for key in genre_dict:
+        df[key] = df.apply(lambda x: encode_genres(key, x["genre"]), axis=1)
+    return df
+    
+
+def encode_genres(curr_genre: str, genres: str):
+    if (not isinstance(genres, str)):
+        return 0
+    genres = genres.split(", ")
+    if curr_genre in genres:
+        return 1
+    return 0
+    
+def columns_rating(df: pd.DataFrame): 
+    rating_dict = pd.read_csv(os.path.join(AUXILIAR_DIR, "animelist_rating.csv"), index_col=1, squeeze=True).to_dict()
+    for key in rating_dict:
+        df[key] = df.apply(lambda x: encode_ratings(key, x["rating"]), axis=1)
+    return df
+
+def encode_ratings(curr_rating: str, rating: str):
+    if (curr_rating == rating):
+        return 1
+    return 0
+
+def encode_animelist_status(df: pd.DataFrame):
+    status_dict = pd.read_csv(os.path.join(AUXILIAR_DIR, "animelist_status.csv"), index_col=1, squeeze=True).to_dict()
+    df.replace({"status": status_dict}, inplace=True)
     return df

@@ -1,4 +1,5 @@
 import os
+import csv
 from datetime import datetime
 
 import pandas as pd
@@ -11,10 +12,10 @@ from userlist_operations import *
 def process_animelist(df: pd.DataFrame):
     transform_animelist_related(df)
     # Drop data
-    drop_animelist_title(df)
-    drop_animelist_title_english(df)
-    drop_animelist_title_japanese(df)
-    drop_animelist_title_synonyms(df)
+    # drop_animelist_title(df)
+    # drop_animelist_title_english(df)
+    # drop_animelist_title_japanese(df)
+    # drop_animelist_title_synonyms(df)
     drop_animelist_image_url(df)
     drop_animelist_source(df)
     drop_animelist_aired(df)
@@ -59,16 +60,24 @@ def process_userlist(df: pd.DataFrame):
     usernames_to_drop = drop_na_userlist(df)
     return df, usernames_to_drop
 
+def postprocess_animelist(df: pd.DataFrame):
+    df = columns_types(df)
+    df = columns_genres(df)
+    df = columns_rating(df)
+    
+    encode_animelist_status(df)
 
 if __name__ == '__main__':
+    # Filter
+
     # Data Frames
     animelist_df = pd.read_csv(ANIMELIST_FILE)
     process_animelist(animelist_df)
-    animelist_df.to_csv(FILTERED_DIR + "AnimeListFiltered.csv", index=False, encoding='utf-8')
+    animelist_df.to_csv(os.path.join(FILTERED_DIR, "AnimeListFiltered.csv"), index=False, encoding='utf-8')
 
     userlist_df = pd.read_csv(USERLIST_FILE)
     _, usernames_to_drop = process_userlist(userlist_df)
-    userlist_df.to_csv(FILTERED_DIR + "UserListFiltered.csv", index=False, encoding='utf-8')
+    userlist_df.to_csv(os.path.join(FILTERED_DIR, "UserListFiltered.csv"), index=False, encoding='utf-8')
 
     notaired_animelist_df = animelist_df[animelist_df['status'] == 'Not yet aired']
     notaired_ids = notaired_animelist_df['anime_id']
@@ -80,5 +89,9 @@ if __name__ == '__main__':
     for useranimelist_chunk in useranimelist_reader:
         process_useranimelist(useranimelist_chunk, usernames_to_drop)
         useranimelist_chunk = useranimelist_chunk[~useranimelist_chunk['anime_id'].isin(notaired_ids)]
-        useranimelist_chunk.to_csv(FILTERED_DIR + "UserAnimeListFiltered.csv", index=False, encoding='utf-8', mode='a', header=header)
+        useranimelist_chunk.to_csv(os.path.join(FILTERED_DIR, "UserAnimeListFiltered.csv"), index=False, encoding='utf-8', mode='a', header=header)
         header = False
+        
+    animelist_df = pd.read_csv(FILTERED_ANIMELIST_FILE)
+    postprocess_animelist(animelist_df)
+    animelist_df.to_csv(os.path.join(FILTERED_DIR, "AnimeListFiltered.csv"), index=False, encoding='utf-8')
