@@ -1,5 +1,6 @@
 import os
 from pyexpat import model
+from turtle import goto
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 
@@ -58,7 +59,7 @@ def list_features():
     list_genre()
     
 def title_anime_recommend_by_title(model, title: str, df: pd.DataFrame, n=2):
-    anime = find_anime_by_title(title, df)
+    anime = find_anime_by_all_titles(title, df)
     kneighbors = model.kneighbors(anime[FEATURES], n_neighbors=n+1)
     animes_recommended = list()
     for i in range(1, n+1):
@@ -66,7 +67,7 @@ def title_anime_recommend_by_title(model, title: str, df: pd.DataFrame, n=2):
     return animes_recommended
     
 def recommend_by_title(model, title: str, df: pd.DataFrame, n=2):
-    anime = find_anime_by_title(title, df)
+    anime = find_anime_by_all_titles(title, df)
     kneighbors = model.kneighbors(anime[FEATURES], n_neighbors=n+1)
     animes_recommended = list()
     for i in range(1, n+1):
@@ -85,11 +86,32 @@ def recommend_by_id(model, anime_id: int, df: pd.DataFrame, n=2):
 def find_anime_by_id(anime_id: int, df: pd.DataFrame):
     return df.loc[df["anime_id"] == anime_id]
     
+def find_anime_by_all_titles(title: str, df: pd.DataFrame):
+    functions = [find_anime_by_title, find_anime_by_title_english, find_anime_by_title_synonyms, find_anime_by_title_japanese]
+    anime = None
+    for i in range(len(functions)):
+        anime = functions[i](title, df)
+        if (not anime.empty):
+            return anime
+    raise Exception("Anime não encontrado")
+    
 def find_anime_by_title(title: str, df: pd.DataFrame):
     return df.loc[df["title"] == title]
 
-def build_model_knn(metric: str, algorithm: str, df: pd.DataFrame, radius = 1.0):
-    model_knn = NearestNeighbors(metric = metric, algorithm = algorithm, radius = radius)
+def find_anime_by_title_english(title_english: str, df: pd.DataFrame):
+    return df.loc[df["title_english"] == title_english]
+
+def find_anime_by_title_japanese(title_japanese: str, df: pd.DataFrame):
+    return df.loc[df["title_japanese"] == title_japanese]
+
+def find_anime_by_title_synonyms(title_synonyms: str, df: pd.DataFrame):
+    return df.loc[df["title_synonyms"] == title_synonyms]
+
+def build_model_knn(metric: str, algorithm: str, df: pd.DataFrame, radius = 1.0, leaf_size = 30):
+    p = 2
+    if (metric == 'minkowski'):
+        p = 4
+    model_knn = NearestNeighbors(metric = metric, algorithm = algorithm, radius = radius, leaf_size = leaf_size, p = p)
     model_knn.fit(df[FEATURES])
     return model_knn
 
@@ -99,18 +121,18 @@ def build_model_knn_radius(metric: str, algorithm: str, df: pd.DataFrame, radius
 METRICS = ['euclidean', 'manhattan', 'minkowski']
 ALGORITHMS = ['kd_tree']
 
-def build_models_knn(radius: float, animelist_df: pd.DataFrame):
+def build_models_knn(radius: float, leaf_size: int, animelist_df: pd.DataFrame):
     models = list()
     for algorithm in ALGORITHMS:
         for metric in METRICS:
-            models.append(build_model_knn(metric, algorithm, animelist_df, radius))
+            models.append(build_model_knn(metric, algorithm, animelist_df, radius, leaf_size))
     return models
             
 def test_model_knn(model, usernames: list, useranimelist_df: pd.DataFrame, animelist_df: pd.DataFrame):
     favorites = build_favorites_dict(usernames, useranimelist_df)
     score = 0
     for username in favorites:
-        recommendeds = recommend_by_id(model, favorites[username][0], animelist_df, 100)
+        recommendeds = recommend_by_id(model, favorites[username][0], animelist_df, 20)
         score_username = 0
         for recommended in recommendeds:
             if (recommended in favorites[username]):
@@ -118,7 +140,7 @@ def test_model_knn(model, usernames: list, useranimelist_df: pd.DataFrame, anime
         score_username = score_username / len(recommendeds)      
         score = score + score_username
     score = score / len(favorites)
-    print("Esse modelo teve score = " + str(score))
+    print("O modelo com a métrica = " + str(model.effective_metric_) + " teve score = " + str(score))
     
             
 def build_favorites_dict(usernames: list, useranimelist_df: pd.DataFrame, min_score = 8):
@@ -145,40 +167,44 @@ def test():
     list_features()
     animelist_df = pd.read_csv(FILTERED_ANIMELIST_FILE)
     
-    models = build_models_knn(1, animelist_df)
-    test_models_knn(models, animelist_df)
+    for i in range(len(RADIUS)):
+        for j in range(len(LEAF_SIZE)):
+            print("Testando com os parâmetros:\nRaio = " + str(RADIUS[i]) + "\nQuantidade do nós folha = " + str(LEAF_SIZE[j]))
+            models = build_models_knn(RADIUS[i], LEAF_SIZE[j], animelist_df)
+            test_models_knn(models, animelist_df)
             
 def cli():
     list_features()
     animelist_df = pd.read_csv(FILTERED_ANIMELIST_FILE)
-    model = build_model_knn('euclidean', 'kd_tree', animelist_df, radius = 1.0)
+    model = build_model_knn('euclidean', 'kd_tree', animelist_df, radius = 1.0, leaf_size=30)
     
     while True:
+        next_anime = True
         anime_title = input("Qual o título do anime que você gosta?\n")
         n = int(input("Quantos animes você gostaria de ser recomendado?\n"))
         recommendations = get_recommendations(anime_title, model, animelist_df, n)
         for recommendation in recommendations:
-            print(recommendation)
+            print(recommendation.split("\n")[0].split("    ")[1])
+        while True:
+            next = input("Gostaria de outra recomendação? (S/N)\n")
+            if (next == "N".casefold()):
+                next_anime = False
+                break
+            elif (next == "S".casefold()):
+                next_anime = True
+                break
+        if (not next_anime):
+            break
         
+            
+RADIUS=[1, 1.5, 2, 2.5, 3]  
 
-# def load():
-#     list_features()
-#     animelist_df = pd.read_csv(FILTERED_ANIMELIST_FILE)
-#     model = build_model_knn('euclidean', 'kd_tree', animelist_df, radius = 1.0)
-#     get_recommendations(anime_title, model, animelist_df, n)
+LEAF_SIZE=[30, 40, 50, 60, 70]
 
 def get_recommendations(anime_title: str, model, df: pd.DataFrame, n: int):
-    return title_anime_recommend_by_title(build_model_knn('euclidean', 'kd_tree', df, radius = 1.0), anime_title, df, n=n)
+    return title_anime_recommend_by_title(model, anime_title, df, n=n)
 
 if __name__ == '__main__':
-    # list_features()
-    # animelist_df = pd.read_csv(FILTERED_ANIMELIST_FILE)
-    # model_knn = NearestNeighbors(metric = 'euclidean', algorithm = 'kd_tree')
-    # model_knn.fit(animelist_df[FEATURES])
-    # recommend(700, 3)
-    # print(find_anime_by_title("Princess Tutu", animelist_df))
-    # print(build_favorites_dict()["karthiga"])
-    # recommend_by_id(build_model_knn('euclidean', 'kd_tree', animelist_df, radius = 1.0), 12365, animelist_df, n=3)
     # test()
     cli()
     

@@ -1,0 +1,150 @@
+Testando com os parâmetros:
+Raio = 1
+Quantidade do nós folha = 30
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 1
+Quantidade do nós folha = 40
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 1
+Quantidade do nós folha = 50
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 1
+Quantidade do nós folha = 60
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 1
+Quantidade do nós folha = 70
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 1.5
+Quantidade do nós folha = 30
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 1.5
+Quantidade do nós folha = 40
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 1.5
+Quantidade do nós folha = 50
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 1.5
+Quantidade do nós folha = 60
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 1.5
+Quantidade do nós folha = 70
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 2
+Quantidade do nós folha = 30
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 2
+Quantidade do nós folha = 40
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 2
+Quantidade do nós folha = 50
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 2
+Quantidade do nós folha = 60
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 2
+Quantidade do nós folha = 70
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 2.5
+Quantidade do nós folha = 30
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 2.5
+Quantidade do nós folha = 40
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 2.5
+Quantidade do nós folha = 50
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 2.5
+Quantidade do nós folha = 60
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 2.5
+Quantidade do nós folha = 70
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 3
+Quantidade do nós folha = 30
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 3
+Quantidade do nós folha = 40
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 3
+Quantidade do nós folha = 50
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 3
+Quantidade do nós folha = 60
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
+Testando com os parâmetros:
+Raio = 3
+Quantidade do nós folha = 70
+O modelo com a métrica = euclidean teve score = 0.7000000000000064
+O modelo com a métrica = manhattan teve score = 0.6000000000000113
+O modelo com a métrica = minkowski teve score = 0.6499999999999878
