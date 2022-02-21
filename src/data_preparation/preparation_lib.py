@@ -10,6 +10,11 @@ from userlist_operations import *
 
 
 def process_animelist(df: pd.DataFrame):
+
+    # Normalize
+    df = normalize_episodes(df)
+    df = normalize_score(df)
+
     transform_animelist_related(df)
     # Drop data
     # drop_animelist_title(df)
@@ -33,7 +38,7 @@ def process_animelist(df: pd.DataFrame):
 
     # Transform
     df = transform_animelist_type(df)
-    df = transform_animelist_status(df)
+    # df = transform_animelist_status(df)
     df = transform_animelist_aired_string(df)
     df = transform_animelist_duration(df)
     df = transform_animelist_rating(df)

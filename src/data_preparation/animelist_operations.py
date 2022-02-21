@@ -135,9 +135,11 @@ def transform_animelist_status(df: pd.DataFrame):
     animelist_status.to_csv(ANIMELIST_STATUS_FILE, index=False, encoding='utf-8')
     replacement = dict()
     for _, row in animelist_status.iterrows():
-        replacement[row['status']] = row['id']
-
-    return df.replace({'status': replacement})
+        ss = float(row['id'])/float(status.size - 1)
+        replacement[row['status']] = float(row['id'])/float(status.size - 1)# Normalize value
+    print(replacement)
+    df.replace({'status': replacement}, inplace=True)
+    return df
 
 def transform_animelist_aired_string(df: pd.DataFrame):
     not_available = df[df['aired_string'].str.contains('Not available')].copy()
@@ -216,7 +218,9 @@ def transform_animelist_genre(df: pd.DataFrame):
 
 def columns_types(df: pd.DataFrame): 
     type_dict = pd.read_csv(os.path.join(AUXILIAR_DIR, "animelist_type.csv"), index_col=1, squeeze=True).to_dict()
-    for key in type_dict:
+    for key, value in type_dict.items():
+        df[key] = 0
+    for key, value in type_dict.items():
         df[key] = df.apply(lambda x: encode_types(key, x["type"]), axis=1)
     return df
 
@@ -226,10 +230,10 @@ def encode_types(curr_type: str, type: str):
     return 0
 
 def columns_genres(df: pd.DataFrame):
-    genre_dict = pd.read_csv(os.path.join(AUXILIAR_DIR, "animelist_genre_dict.csv"), index_col=0, squeeze=True).to_dict()
-    for key in genre_dict:
+    genre_dict = pd.read_csv(os.path.join(AUXILIAR_DIR, "animelist_genre_dict.csv"), index_col=1, squeeze=True).to_dict()
+    for key, value in genre_dict.items():
         df[key] = 0
-    for key in genre_dict:
+    for key, value in genre_dict.items():
         df[key] = df.apply(lambda x: encode_genres(key, x["genre"]), axis=1)
     return df
     
@@ -237,14 +241,15 @@ def columns_genres(df: pd.DataFrame):
 def encode_genres(curr_genre: str, genres: str):
     if (not isinstance(genres, str)):
         return 0
-    genres = genres.split(", ")
     if curr_genre in genres:
         return 1
     return 0
     
 def columns_rating(df: pd.DataFrame): 
     rating_dict = pd.read_csv(os.path.join(AUXILIAR_DIR, "animelist_rating.csv"), index_col=1, squeeze=True).to_dict()
-    for key in rating_dict:
+    for key, value in rating_dict.items():
+        df[key] = 0
+    for key, value in rating_dict.items():
         df[key] = df.apply(lambda x: encode_ratings(key, x["rating"]), axis=1)
     return df
 
@@ -256,4 +261,12 @@ def encode_ratings(curr_rating: str, rating: str):
 def encode_animelist_status(df: pd.DataFrame):
     status_dict = pd.read_csv(os.path.join(AUXILIAR_DIR, "animelist_status.csv"), index_col=1, squeeze=True).to_dict()
     df.replace({"status": status_dict}, inplace=True)
+    return df
+
+def normalize_episodes(df: pd.DataFrame):
+    df['episodes'] = (df['episodes'] - df['episodes'].min())/(df['episodes'].max() - df['episodes'].min())
+    return df
+
+def normalize_score(df: pd.DataFrame):
+    df['score'] = (df['score'] - df['score'].min())/(df['score'].max() - df['score'].min())
     return df

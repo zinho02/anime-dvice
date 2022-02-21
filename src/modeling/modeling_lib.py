@@ -49,7 +49,7 @@ def list_rating():
         FEATURES.append(rating)
         
 def list_genre():
-    genre_dict = pd.read_csv(os.path.join(AUXILIAR_DIR, "animelist_genre_dict.csv"), index_col=0, squeeze=True).to_dict()
+    genre_dict = pd.read_csv(os.path.join(AUXILIAR_DIR, "animelist_genre_dict.csv"), index_col=1, squeeze=True).to_dict()
     for genre in genre_dict:
         FEATURES.append(genre)
      
@@ -187,10 +187,10 @@ def cli():
             print(recommendation.split("\n")[0].split("    ")[1])
         while True:
             next = input("Gostaria de outra recomendação? (S/N)\n")
-            if (next == "N".casefold()):
+            if (next.casefold() == "N".casefold()):
                 next_anime = False
                 break
-            elif (next == "S".casefold()):
+            elif (next.casefold() == "S".casefold()):
                 next_anime = True
                 break
         if (not next_anime):
@@ -207,4 +207,3 @@ def get_recommendations(anime_title: str, model, df: pd.DataFrame, n: int):
 if __name__ == '__main__':
     # test()
     cli()
-    
