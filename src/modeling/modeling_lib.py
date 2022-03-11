@@ -135,19 +135,22 @@ def test_model_knn(model, usernames: list, useranimelist_df: pd.DataFrame, anime
         recommendeds = recommend_by_id(model, favorites[username][0], animelist_df, 20)
         score_username = 0
         for recommended in recommendeds:
-            if (recommended in favorites[username]):
+            if recommended in favorites[username]:
                 score_username = score_username + 1
-        score_username = score_username / len(recommendeds)      
+        score_username = score_username / len(recommendeds)
+        print("score {}".format(score_username))
         score = score + score_username
     score = score / len(favorites)
     print("O modelo com a métrica = " + str(model.effective_metric_) + " teve score = " + str(score))
     
             
-def build_favorites_dict(usernames: list, useranimelist_df: pd.DataFrame, min_score = 8):
+def build_favorites_dict(usernames: list, useranimelist_df: pd.DataFrame, min_score = 1):
     favorites = {}
     for username in usernames:
-        favorites_list = useranimelist_df[useranimelist_df["username"] == username]
-        favorites_list = useranimelist_df[useranimelist_df["my_score"] > min_score]
+        #favorites_list = useranimelist_df[useranimelist_df["username"] == username]
+        #favorites_list = useranimelist_df[useranimelist_df["my_score"] > min_score]
+        favorites_list = useranimelist_df[(useranimelist_df["username"] == username) & (useranimelist_df["my_score"] > min_score)]
+        #favorites_list = useranimelist_df[useranimelist_df["my_score"] > min_score]
         favorites_list = favorites_list["anime_id"].to_list()
         if len(favorites_list) > 0:
             favorites[username] = favorites_list
@@ -205,5 +208,5 @@ def get_recommendations(anime_title: str, model, df: pd.DataFrame, n: int):
     return title_anime_recommend_by_title(model, anime_title, df, n=n)
 
 if __name__ == '__main__':
-    # test()
-    cli()
+    test()
+    # cli()
